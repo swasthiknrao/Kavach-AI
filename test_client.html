@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kavach AI Security Test Client</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        .container {
+            display: flex;
+            gap: 20px;
+        }
+        .input-section {
+            flex: 1;
+        }
+        .result-section {
+            flex: 1;
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            min-height: 400px;
+        }
+        input, textarea, button {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        pre {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        .score-display {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .score-panel {
+            flex: 1;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .risk-high {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .risk-medium {
+            background-color: #f39c12;
+            color: white;
+        }
+        .risk-low {
+            background-color: #2ecc71;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Kavach AI Security Test Client</h1>
+    
+    <div class="score-display">
+        <div id="risk-score" class="score-panel">
+            <h3>Risk Score</h3>
+            <p id="risk-value">-</p>
+        </div>
+        <div id="confidence" class="score-panel">
+            <h3>Confidence</h3>
+            <p id="confidence-value">-</p>
+        </div>
+        <div id="risk-level" class="score-panel">
+            <h3>Risk Level</h3>
+            <p id="level-value">-</p>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="input-section">
+            <h2>Input</h2>
+            <input type="text" id="url-input" placeholder="Enter URL to analyze (e.g., https://example.com)" />
+            
+            <h3>Webpage Content (HTML)</h3>
+            <textarea id="content-input" rows="10" placeholder="Paste HTML content here (optional)"></textarea>
+            
+            <button id="analyze-btn">Analyze URL</button>
+            <button id="test-btn">Run Predefined Test</button>
+        </div>
+        
+        <div class="result-section">
+            <h2>Analysis Results</h2>
+            <div id="component-scores"></div>
+            <pre id="result-json"></pre>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('analyze-btn').addEventListener('click', analyzeUrl);
+        document.getElementById('test-btn').addEventListener('click', runTest);
+        
+        function analyzeUrl() {
+            const url = document.getElementById('url-input').value;
+            const content = document.getElementById('content-input').value;
+            
+            if (!url) {
+                alert('Please enter a URL to analyze');
+                return;
+            }
+            
+            // Sample behavior data - in a real extension this would be collected
+            const behaviorData = {
+                forms: 1,
+                hasPasswordField: content.includes('type="password"'),
+                hasLoginForm: content.includes('login') || content.includes('signin'),
+                redirectCount: 0,
+                scripts: [],
+                iframes: 0,
+                hiddenElements: 0,
+                links: 5,
+                externalLinks: [],
+                eventListeners: {}
+            };
+            
+            fetch('http://127.0.0.1:9000/api/analyze', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    url: url,
+                    content: content,
+                    behavior: behaviorData
+                }),
+            })
+            .then(response => response.json())
+            .then(data => displayResults(data))
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('result-json').textContent = 
+                    'Error connecting to the backend server. Make sure it\'s running on port 9000.';
+            });
+        }
+        
+        function runTest() {
+            fetch('http://127.0.0.1:9000/api/test-analysis')
+            .then(response => response.json())
+            .then(data => displayResults(data))
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('result-json').textContent = 
+                    'Error connecting to the backend server. Make sure it\'s running on port 9000.';
+            });
+        }
+        
+        function displayResults(data) {
+            // Display the raw JSON
+            document.getElementById('result-json').textContent = JSON.stringify(data, null, 2);
+            
+            // Update the risk score panels
+            if (data.risk_assessment) {
+                const riskScore = data.risk_assessment.risk_score;
+                const confidence = data.risk_assessment.confidence;
+                const riskLevel = data.risk_assessment.risk_level;
+                
+                const riskElement = document.getElementById('risk-score');
+                document.getElementById('risk-value').textContent = (riskScore * 100).toFixed(1) + '%';
+                
+                // Set color based on risk
+                riskElement.className = 'score-panel';
+                if (riskScore > 0.7) {
+                    riskElement.classList.add('risk-high');
+                } else if (riskScore > 0.4) {
+                    riskElement.classList.add('risk-medium');
+                } else {
+                    riskElement.classList.add('risk-low');
+                }
+                
+                document.getElementById('confidence-value').textContent = 
+                    (confidence * 100).toFixed(1) + '%';
+                document.getElementById('level-value').textContent = riskLevel;
+                
+                // Display component scores
+                if (data.component_scores) {
+                    let scoreHtml = '<h3>Component Analysis</h3><ul>';
+                    for (const [key, value] of Object.entries(data.component_scores)) {
+                        scoreHtml += `<li><strong>${key}:</strong> ${(value * 100).toFixed(1)}%</li>`;
+                    }
+                    scoreHtml += '</ul>';
+                    document.getElementById('component-scores').innerHTML = scoreHtml;
+                }
+            }
+        }
+    </script>
+</body>
+</html> 

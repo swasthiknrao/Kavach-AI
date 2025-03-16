@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Kavach AI Test Client</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-top: 0;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        pre {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            overflow: auto;
+            max-height: 500px;
+        }
+        .component {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .status {
+            font-weight: bold;
+        }
+        .safe { color: green; }
+        .warning { color: orange; }
+        .danger { color: red; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Kavach AI Test Client</h1>
+        
+        <div class="component">
+            <h2>Test URL</h2>
+            <input type="text" id="testUrl" value="https://example.com" style="width: 80%; padding: 8px;">
+            <button id="analyzeBtn">Analyze URL</button>
+        </div>
+        
+        <div class="component">
+            <h2>Response</h2>
+            <div id="responseStatus" class="status">Ready</div>
+            <pre id="responseData">Results will appear here</pre>
+        </div>
+        
+        <div class="component">
+            <h2>Analysis Components</h2>
+            <div id="urlSafety" class="component">
+                <h3>URL Safety</h3>
+                <div class="status">-</div>
+            </div>
+            <div id="visualMatch" class="component">
+                <h3>Visual Match</h3>
+                <div class="status">-</div>
+            </div>
+            <div id="behavior" class="component">
+                <h3>Behavior</h3>
+                <div class="status">-</div>
+            </div>
+            <div id="connection" class="component">
+                <h3>Connection</h3>
+                <div class="status">-</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('analyzeBtn').addEventListener('click', function() {
+            const url = document.getElementById('testUrl').value;
+            const statusElement = document.getElementById('responseStatus');
+            const responseElement = document.getElementById('responseData');
+            
+            // Update status
+            statusElement.textContent = 'Analyzing...';
+            statusElement.className = 'status';
+            
+            // Make API request
+            fetch('http://127.0.0.1:9000/api/analyze', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    url: url,
+                    content: '<html><body>Test content for analysis</body></html>',
+                    behavior: {
+                        hasPasswordField: false,
+                        redirectCount: 0,
+                        externalLinks: [],
+                        scripts: []
+                    }
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display full response data
+                responseElement.textContent = JSON.stringify(data, null, 2);
+                
+                // Update status based on risk level
+                if (data.status === 'success') {
+                    const riskLevel = data.risk_assessment.risk_level;
+                    statusElement.textContent = `Analysis complete: ${riskLevel} risk`;
+                    statusElement.className = `status ${getRiskClass(riskLevel)}`;
+                    
+                    // Update component displays
+                    updateComponent('urlSafety', data.component_scores.url_risk);
+                    updateComponent('visualMatch', data.component_scores.visual_risk);
+                    updateComponent('behavior', data.component_scores.behavior_risk);
+                    updateComponent('connection', data.component_scores.ssl_risk);
+                } else {
+                    statusElement.textContent = 'Error: ' + (data.message || 'Unknown error');
+                    statusElement.className = 'status danger';
+                }
+            })
+            .catch(error => {
+                responseElement.textContent = 'Error: ' + error;
+                statusElement.textContent = 'Request failed';
+                statusElement.className = 'status danger';
+            });
+        });
+        
+        function updateComponent(id, riskScore) {
+            const component = document.getElementById(id);
+            const statusElement = component.querySelector('.status');
+            
+            // Convert risk score (0-1) to percentage
+            const percentage = Math.round(riskScore * 100);
+            
+            // Determine risk level
+            let riskLevel;
+            if (riskScore >= 0.7) {
+                riskLevel = 'High Risk';
+            } else if (riskScore >= 0.4) {
+                riskLevel = 'Medium Risk';
+            } else {
+                riskLevel = 'Low Risk';
+            }
+            
+            // Update component display
+            statusElement.textContent = `${riskLevel} (${percentage}%)`;
+            statusElement.className = `status ${getRiskClass(riskLevel)}`;
+        }
+        
+        function getRiskClass(riskLevel) {
+            if (typeof riskLevel === 'string') {
+                if (riskLevel.toLowerCase().includes('high')) return 'danger';
+                if (riskLevel.toLowerCase().includes('medium')) return 'warning';
+                if (riskLevel.toLowerCase().includes('low')) return 'safe';
+            }
+            return '';
+        }
+    </script>
+</body>
+</html> 

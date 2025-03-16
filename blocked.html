@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site Blocked - Kavach Security</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #121212;
+            color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        
+        .blocked-container {
+            max-width: 500px;
+            padding: 24px;
+            background: #1e1e1e;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            border: 2px solid #ff3333;
+            text-align: center;
+        }
+        
+        .shield-icon {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #ff1744, #ff5252);
+            border-radius: 50%;
+            color: white;
+            margin: 0 auto 24px;
+            box-shadow: 0 4px 12px rgba(255,23,68,0.3);
+        }
+        
+        .shield-icon .material-icons-round {
+            font-size: 48px;
+        }
+        
+        h1 {
+            margin: 0 0 16px;
+            font-size: 28px;
+            font-weight: 700;
+            color: #ff5252;
+        }
+        
+        .domain-name {
+            font-weight: bold;
+            color: #ff5252;
+            margin: 16px 0;
+            font-size: 18px;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 16px;
+            margin-top: 24px;
+            justify-content: center;
+        }
+        
+        button {
+            background: #2a2a2a;
+            border: 1px solid #3a3a3a;
+            border-radius: 8px;
+            padding: 10px 20px;
+            color: #e0e0e0;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        button:hover {
+            background: #3a3a3a;
+            transform: translateY(-2px);
+        }
+        
+        button.primary {
+            background: linear-gradient(135deg, #2962ff, #1565c0);
+            border: none;
+            color: white;
+        }
+        
+        button.primary:hover {
+            box-shadow: 0 4px 12px rgba(41,98,255,0.3);
+        }
+        
+        .kavach-footer {
+            margin-top: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #9e9e9e;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="blocked-container">
+        <div class="shield-icon">
+            <span class="material-icons-round">block</span>
+        </div>
+        <h1>Site has been blocked</h1>
+        
+        <div class="domain-name" id="domain-display"></div>
+        
+        <div class="button-group">
+            <button id="back-button" class="primary">
+                <span class="material-icons-round">arrow_back</span>
+                Return to Safety
+            </button>
+            <button id="unblock-button">
+                <span class="material-icons-round">lock_open</span>
+                Unblock Site
+            </button>
+        </div>
+        
+        <div class="kavach-footer">
+            Protected by Kavach AI Security
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('back-button').addEventListener('click', () => {
+            window.history.back();
+        });
+        
+        // Get domain from URL if available
+        const urlParams = new URLSearchParams(window.location.search);
+        const domain = urlParams.get('domain');
+        
+        if (domain) {
+            document.getElementById('domain-display').textContent = domain;
+        }
+        
+        // Unblock button functionality
+        document.getElementById('unblock-button').addEventListener('click', () => {
+            if (domain && chrome.runtime) {
+                chrome.runtime.sendMessage({
+                    action: 'block_site',
+                    domain: domain,
+                    blockAction: 'remove'
+                }, response => {
+                    if (response && response.success) {
+                        // Navigate to the previously blocked site
+                        window.location.href = `https://${domain}`;
+                    } else {
+                        alert('Failed to unblock site. Please try again.');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generate Icons</title>
+</head>
+<body>
+    <canvas id="canvas16" width="16" height="16"></canvas>
+    <canvas id="canvas48" width="48" height="48"></canvas>
+    <canvas id="canvas128" width="128" height="128"></canvas>
+    
+    <script>
+        function drawIcon(canvas) {
+            const ctx = canvas.getContext('2d');
+            const size = canvas.width;
+            
+            // Background
+            ctx.fillStyle = '#2c3e50';
+            ctx.fillRect(0, 0, size, size);
+            
+            // Shield
+            ctx.beginPath();
+            ctx.fillStyle = '#3498db';
+            ctx.arc(size/2, size/2, size*0.4, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Letter K
+            ctx.fillStyle = '#ffffff';
+            ctx.font = `bold ${size*0.5}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('K', size/2, size/2);
+        }
+        
+        // Draw icons
+        ['canvas16', 'canvas48', 'canvas128'].forEach(id => {
+            const canvas = document.getElementById(id);
+            drawIcon(canvas);
+            
+            // Download link
+            const link = document.createElement('a');
+            link.download = `icon${canvas.width}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        });
+    </script>
+</body>
+</html> 

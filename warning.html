@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site Blocked - Kavach AI Security</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background-color: #f5f7fa;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .blocked-container {
+            max-width: 600px;
+            width: 90%;
+            background-color: #e74c3c;
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            padding: 40px 30px;
+        }
+        
+        .blocked-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+        
+        .blocked-title {
+            font-size: 28px;
+            font-weight: 600;
+            margin: 0 0 20px 0;
+        }
+        
+        .site-url {
+            font-size: 18px;
+            font-weight: 500;
+            margin: 20px 0;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            word-break: break-all;
+        }
+        
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .action-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+        
+        .back-btn {
+            background-color: white;
+            color: #333;
+        }
+        
+        .back-btn:hover {
+            background-color: #f1f1f1;
+            transform: translateY(-2px);
+        }
+        
+        .logo {
+            position: absolute;
+            bottom: 20px;
+            font-size: 14px;
+            color: #95a5a6;
+        }
+    </style>
+</head>
+<body>
+    <div class="blocked-container">
+        <div class="blocked-icon">⚠️</div>
+        <h1 class="blocked-title">Site Blocked</h1>
+        <p>This site has been blocked for your protection.</p>
+        <div class="site-url" id="site-url">example.com</div>
+        <div class="actions">
+            <button id="back-btn" class="action-btn back-btn">Go Back</button>
+        </div>
+    </div>
+    <div class="logo">Kavach AI Security</div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get URL from query parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const blockedUrl = urlParams.get('url');
+            
+            // Display the blocked URL
+            if (blockedUrl) {
+                document.getElementById('site-url').textContent = blockedUrl;
+            }
+            
+            // Handle back button click
+            document.getElementById('back-btn').addEventListener('click', function() {
+                window.history.back();
+            });
+        });
+    </script>
+</body>
+</html> 

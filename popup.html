@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kavach Security</title>
+    <link rel="stylesheet" href="popup.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="title">
+                <div class="shield-icon" role="img" aria-label="Security Shield">
+                    <span class="material-icons-round">security</span>
+                </div>
+                <h1>Kavach Security</h1>
+            </div>
+            <div class="header-actions">
+                <button id="refresh-analysis" class="refresh-button" title="Refresh Analysis">
+                    <span class="material-icons-round">refresh</span>
+                </button>
+                <button id="about-button" class="about-button" title="About Kavach">
+                    <span class="material-icons-round">info</span>
+                </button>
+            </div>
+            <div id="overall-status" class="status-badge analyzing" role="status">
+                <span class="material-icons-round">radar</span>
+                <span>Scanning</span>
+            </div>
+        </header>
+
+        <main class="analysis-cards">
+            <!-- URL Security -->
+            <section class="analysis-card" role="region" aria-labelledby="website-security-title">
+                <div class="analysis-card-header">
+                    <div class="card-icon">
+                        <span class="material-icons-round">link</span>
+                    </div>
+                    <h2 id="website-security-title">URL Safety</h2>
+                </div>
+                <div id="url-risk-value" class="risk-value analyzing">--</div>
+                <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress"></div>
+                </div>
+                <p id="url-details">Analyzing URL for threats...</p>
+            </section>
+
+            <!-- Visual/Brand Protection -->
+            <section class="analysis-card" role="region" aria-labelledby="brand-protection-title">
+                <div class="analysis-card-header">
+                    <div class="card-icon">
+                        <span class="material-icons-round">visibility</span>
+                    </div>
+                    <h2 id="brand-protection-title">Visual Match</h2>
+                </div>
+                <div id="visual-risk-value" class="risk-value analyzing">--</div>
+                <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress"></div>
+                </div>
+                <p id="visual-details">Checking for brand impersonation...</p>
+            </section>
+
+            <!-- Behavior Check -->
+            <section class="analysis-card" role="region" aria-labelledby="behavior-check-title">
+                <div class="analysis-card-header">
+                    <div class="card-icon">
+                        <span class="material-icons-round">psychology</span>
+                    </div>
+                    <h2 id="behavior-check-title">Behavior</h2>
+                </div>
+                <div id="behavior-risk-value" class="risk-value analyzing">--</div>
+                <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress"></div>
+                </div>
+                <p id="behavior-details">Detecting malicious behavior...</p>
+            </section>
+
+            <!-- Connection Security -->
+            <section class="analysis-card" role="region" aria-labelledby="connection-security-title">
+                <div class="analysis-card-header">
+                    <div class="card-icon">
+                        <span class="material-icons-round">enhanced_encryption</span>
+                    </div>
+                    <h2 id="connection-security-title">Connection</h2>
+                </div>
+                <div id="ssl-risk-value" class="risk-value analyzing">--</div>
+                <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress"></div>
+                </div>
+                <p id="ssl-details">Verifying encryption status...</p>
+            </section>
+        </main>
+
+        <div class="action-buttons">
+            <button id="block-button" class="action-button block-btn">
+                <span class="material-icons-round">block</span>
+                <span>Block Site</span>
+            </button>
+            <button id="trusted-button" class="action-button trust-btn">
+                <span class="material-icons-round">verified_user</span>
+                <span>Trust Site</span>
+            </button>
+            <button id="details-button" class="action-button details-btn">
+                <span class="material-icons-round">analytics</span>
+                <span>Details</span>
+            </button>
+        </div>
+
+        <section class="suspicious-patterns" hidden>
+            <h2>Suspicious Patterns</h2>
+            <ul id="patterns-list" class="patterns-list"></ul>
+        </section>
+
+        <footer class="recommendations">
+            <h2>Security Insights</h2>
+            <div id="recommendation-list" class="recommendation-list"></div>
+            <div class="source-info">
+                <p>Powered by Kavach AI Security</p>
+                <a href="#" id="view-about">About</a>
+            </div>
+        </footer>
+    </div>
+    <script src="demo_data.js"></script>
+    <script src="popup.js"></script>
+</body>
+</html> 

@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kavach AI Security - Detailed Report</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --primary-gradient: linear-gradient(135deg, #4361ee, #3a0ca3);
+            --danger-color: #ef233c;
+            --danger-gradient: linear-gradient(135deg, #ef233c, #d90429);
+            --warning-color: #ff9e00;
+            --warning-gradient: linear-gradient(135deg, #ff9e00, #ff6d00);
+            --success-color: #38b000;
+            --success-gradient: linear-gradient(135deg, #38b000, #008000);
+            --dark-color: #1e293b;
+            --light-color: #f8fafc;
+            --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --transition: all 0.3s ease;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #334155;
+            background-color: #f1f5f9;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 30px 0;
+            margin-bottom: 40px;
+            border-radius: 0 0 20px 20px;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            margin-right: 20px;
+            font-size: 30px;
+        }
+        
+        h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .report-meta {
+            margin-top: 10px;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .site-info {
+            background-color: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: var(--card-shadow);
+            border-left: 5px solid var(--primary-color);
+        }
+        
+        .site-url {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            word-break: break-all;
+            display: flex;
+            align-items: center;
+        }
+        
+        .site-url::before {
+            content: "🌐";
+            margin-right: 10px;
+            font-size: 24px;
+        }
+        
+        .scan-time {
+            color: #64748b;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .scan-time::before {
+            content: "🕒";
+            margin-right: 8px;
+        }
+        
+        .risk-score-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .score-card {
+            background-color: white;
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .score-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .score-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: var(--primary-gradient);
+        }
+        
+        .score-card.high-risk::before {
+            background: var(--danger-gradient);
+        }
+        
+        .score-card.medium-risk::before {
+            background: var(--warning-gradient);
+        }
+        
+        .score-card.low-risk::before {
+            background: var(--success-gradient);
+        }
+        
+        .score-title {
+            font-size: 16px;
+            color: #64748b;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        
+        .score-value {
+            font-size: 42px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .score-value span {
+            font-size: 18px;
+            margin-left: 5px;
+            opacity: 0.7;
+        }
+        
+        .score-high {
+            color: var(--danger-color);
+        }
+        
+        .score-medium {
+            color: var(--warning-color);
+        }
+        
+        .score-low {
+            color: var(--success-color);
+        }
+        
+        .analysis-section {
+            background-color: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: var(--card-shadow);
+        }
+        
+        h2 {
+            margin-top: 0;
+            font-size: 22px;
+            color: var(--dark-color);
+            padding-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        h2::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--primary-gradient);
+            border-radius: 2px;
+        }
+        
+        .component-scores {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+        
+        .component-card {
+            background-color: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            box-sizing: border-box;
+            transition: var(--transition);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .component-card:hover {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transform: translateY(-2px);
+        }
+        
+        .component-name {
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .component-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background-color: #e2e8f0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 1s ease-in-out;
+            position: relative;
+        }
+        
+        .fill-high {
+            background: var(--danger-gradient);
+        }
+        
+        .fill-medium {
+            background: var(--warning-gradient);
+        }
+        
+        .fill-low {
+            background: var(--success-gradient);
+        }
+        
+        .findings-container {
+            margin-top: 25px;
+        }
+        
+        .finding-item {
+            background-color: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #cbd5e1;
+            transition: var(--transition);
+        }
+        
+        .finding-item:hover {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .finding-item.high-severity {
+            border-left-color: var(--danger-color);
+        }
+        
+        .finding-item.medium-severity {
+            border-left-color: var(--warning-color);
+        }
+        
+        .finding-item.low-severity {
+            border-left-color: var(--success-color);
+        }
+        
+        .finding-type {
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .finding-type::before {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .high-severity::before {
+            content: "⚠️";
+        }
+        
+        .medium-severity::before {
+            content: "⚠️";
+        }
+        
+        .low-severity::before {
+            content: "ℹ️";
+        }
+        
+        .high-severity {
+            color: var(--danger-color);
+        }
+        
+        .medium-severity {
+            color: var(--warning-color);
+        }
+        
+        .low-severity {
+            color: var(--success-color);
+        }
+        
+        .finding-description {
+            margin-bottom: 15px;
+        }
+        
+        .finding-evidence {
+            background-color: #f1f5f9;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            font-size: 14px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .page-content-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 25px;
+        }
+        
+        @media (max-width: 768px) {
+            .page-content-section {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .content-preview, .behavior-data {
+            background-color: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .code-preview {
+            background-color: var(--dark-color);
+            color: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            height: 300px;
+            overflow-y: auto;
+            margin-top: 15px;
+        }
+        
+        .behavior-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: #fff;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .behavior-label {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .behavior-value {
+            background-color: #f1f5f9;
+            padding: 5px 10px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-top: 5px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .action-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 16px;
+        }
+        
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background-color: #e2e8f0;
+            color: #475569;
+        }
+        
+        .btn-danger {
+            background: var(--danger-gradient);
+            color: white;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: #64748b;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">🛡️</div>
+            <div>
+                <h1>Detailed Security Report</h1>
+                <div class="report-meta">Generated by Kavach AI Security</div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="site-info">
+            <div class="site-url" id="site-url">example.com</div>
+            <div class="scan-time" id="scan-time">Scanned on June 15, 2023 at 14:30:45 UTC</div>
+        </div>
+
+        <div class="risk-score-container">
+            <div class="score-card high-risk">
+                <div class="score-title">Overall Risk Score</div>
+                <div class="score-value score-high" id="overall-score">85<span>%</span></div>
+            </div>
+            <div class="score-card medium-risk">
+                <div class="score-title">Detection Confidence</div>
+                <div class="score-value score-medium" id="confidence-score">75<span>%</span></div>
+            </div>
+            <div class="score-card">
+                <div class="score-title">Suspicious Patterns</div>
+                <div class="score-value" id="patterns-count">12</div>
+            </div>
+        </div>
+
+        <div class="analysis-section">
+            <h2>Component Analysis</h2>
+            <div class="component-scores" id="component-scores">
+                <!-- Component scores will be inserted here by JavaScript -->
+            </div>
+        </div>
+
+        <div class="analysis-section">
+            <h2>Security Findings</h2>
+            <div class="findings-container" id="findings-list">
+                <!-- Findings will be inserted here by JavaScript -->
+            </div>
+        </div>
+
+        <div class="analysis-section">
+            <h2>Page Content Analysis</h2>
+            <div class="page-content-section">
+                <div class="content-preview">
+                    <h3>HTML Structure</h3>
+                    <div class="code-preview" id="html-preview">
+                        <!-- HTML preview will be inserted here -->
+                    </div>
+                </div>
+                <div class="behavior-data">
+                    <h3>Suspicious Behaviors</h3>
+                    <div id="behavior-list">
+                        <!-- Behavior data will be inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="action-btn btn-secondary" id="download-report">Download Report</button>
+            <button class="action-btn btn-primary" id="back-to-browser">Back to Browser</button>
+            <button class="action-btn btn-danger" id="block-site">Block This Site</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2023 Kavach AI Security. All rights reserved.</p>
+    </footer>
+
+    <script src="detailed_report.js"></script>
+</body>
+</html> 
