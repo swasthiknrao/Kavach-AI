@@ -117,11 +117,8 @@ Kavach AI Security uses ONNX Runtime for model inference instead of TensorFlow f
 
 ## Development and Contribution
 
-Contributions are welcome! To contribute:
-
-1. Fork the repository
-2. Create a feature branch
-3. Submit a pull request with your changes
+Nithish Achar – nithishachar29@gmail.com
+Raveendra Prabhu -raveendra5656@gmail.com
 
 Please ensure your code follows our coding standards and includes appropriate tests.
 
@@ -131,5 +128,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Contact
 
-For questions, feedback, or collaboration opportunities, please reach out to:
-info@kavach-ai-security.com
+Swasthik N Rao – Nraoswasthik2004@gmail.com
+GitHub: github.com/swasthiknrao
+LinkedIn: linkedin.com/in/swasthik-n-rao
