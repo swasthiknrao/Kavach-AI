@@ -118,6 +118,7 @@ Kavach AI Security uses ONNX Runtime for model inference instead of TensorFlow f
 ## Development and Contribution
 
 Nithish Achar – nithishachar29@gmail.com
+LinkedIn:https://www.linkedin.com/in/nithish-acharya-aa7283290
 
 Raveendra Prabhu -raveendra5656@gmail.com
 
