@@ -121,7 +121,6 @@ Nithish Achar – nithishachar29@gmail.com
 
 Raveendra Prabhu -raveendra5656@gmail.com
 
-Please ensure your code follows our coding standards and includes appropriate tests.
 
 ## License
 
